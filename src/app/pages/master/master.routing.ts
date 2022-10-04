@@ -2,7 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: "department",
+    path: "",
     loadChildren: () =>
       import("../master/department/department.module").then((m) => m.DepartmentModule),
   },

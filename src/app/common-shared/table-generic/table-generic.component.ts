@@ -94,9 +94,11 @@ export class TableGenericComponent implements OnInit {
     };
     this.paginate.emit(pageObject);
   };
+
   edit = (row: any) => {
     this.editRow.emit(row);
   };
+
   delete = (template: TemplateRef<any>, row: any) => {
     const data = {
       title: "Delete",

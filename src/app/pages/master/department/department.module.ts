@@ -5,12 +5,15 @@ import { DepartmentRoutes } from './department.routing';
 import { DepartmentAddComponent } from './department-add/department-add.component';
 import { DepartmentListComponent } from './department-list/department-list.component';
 import { NbCardModule } from '@nebular/theme';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   imports: [
     CommonModule,
     DepartmentRoutes,
     NbCardModule,
+    MatPaginatorModule
+
   ],
   declarations: [DepartmentComponent,DepartmentAddComponent,DepartmentListComponent],
   entryComponents:[

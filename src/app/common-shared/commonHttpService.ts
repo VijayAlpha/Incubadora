@@ -81,12 +81,4 @@ export class CommonHttpClientService {
     }
   }
 
-  uploadFile = (body: any) => {
-    return this.httpClient
-      .post<any>(this.appConfiguration.baseUrl + this.appConfiguration.uploadFile, body).pipe(catchError(error => {
-        this.errorHandler(error)
-        return throwError(error);
-      }));
-  }
-
 }

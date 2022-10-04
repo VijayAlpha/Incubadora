@@ -5,4 +5,5 @@
  */
 export const environment = {
   production: true,
+  baseURL:'http://103.108.220.162:8062/',
 };

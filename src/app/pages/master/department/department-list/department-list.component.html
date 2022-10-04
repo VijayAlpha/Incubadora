@@ -1,3 +1,38 @@
-<p>
-  department-list works!
-</p>
+<div class="card" style="margin-bottom: 1%;">
+  <mat-paginator [length]="count" [pageSizeOptions]="[10, 25, 100]" showFirstLastButtons (page)="onPaginate($event)"
+    [hidden]="!data.length">
+  </mat-paginator>
+</div>
+
+
+<nb-card *ngFor="let nft of data">
+  <nb-card-header>
+    <p>{{nft.title}} </p>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-md-10">
+        <p>
+          MetaData : {{nft.metadata_id}}
+        </p>
+        <p>
+          Price : {{nft.eprice}}
+        </p>
+      </div>
+      <div class="col-md-2">
+        <img src="{{nft.media}}" height="100" width="150">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" *ngFor="let category of categories">
+        <div *ngIf="nft.category?.id != category.id; else other_content">
+          <a href="javascript:void(0)" (click)="updateCategory(nft.id, category.id)"
+            style="text-decoration: none;">{{category.name}}</a>
+        </div>
+
+        <ng-template #other_content><a href="javascript:void(0)" (click)="updateCategory(nft.id, category.id)"
+            style="text-decoration: none; color: green;">{{category.name}}</a></ng-template>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
