@@ -1,0 +1,10 @@
+[
+  {
+    "tenantName" : "default",
+    "schema" : "horizon"
+  },
+  {
+    "tenantName" : "horizon",
+    "schema" : "horizon"
+  }
+]
