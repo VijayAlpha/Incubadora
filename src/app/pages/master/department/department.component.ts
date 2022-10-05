@@ -11,17 +11,17 @@ export class DepartmentComponent implements OnInit {
   public datatrigger: EventEmitter<any> = new EventEmitter();
   filter:any = [];
   priceFilter:any;
-   categoryObj:any = {
+  categoryObj:any = {
     "key":"category.id",
     "operation": "::",
     "values":[]
-   }
+  }
 
-   priceObj :any={
+  priceObj :any={
     "key":"price",
     "operation": "<>",
     "value":""
-   }
+  }
   constructor() { }
 
   ngOnInit() {

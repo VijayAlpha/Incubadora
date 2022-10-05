@@ -42,7 +42,7 @@ export class FilterComponent implements OnInit {
 
   onChange=(event:any)=>{
     this.filterObj.category = this.categoryIds;
-    this.filterObj.price = event;
+    this.filterObj.price = this.selectedPrice;
     this.filter.emit(this.filterObj);
   }
 
