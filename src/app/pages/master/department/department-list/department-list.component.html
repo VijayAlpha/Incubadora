@@ -23,7 +23,7 @@
         <img src="{{nft.media}}" height="100" width="150">
       </div>
     </div>
-    <div class="row">
+    <div class="row" style="display: none;">
       <div class="col" *ngFor="let category of categories">
         <div *ngIf="nft.category?.id != category.id; else other_content">
           <a href="javascript:void(0)" (click)="updateCategory(nft.id, category.id)"

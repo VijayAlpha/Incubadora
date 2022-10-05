@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-md-12">
+    <p> Categories </p>
+    <div class="demo-items" *ngFor="let category of categories" style="padding-top: 4%">
+      <nb-checkbox (checkedChange)="toggleCategory($event, category.id)">{{category.name}}</nb-checkbox>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 2%; margin-top: 2%;" class="col-md-12"> </div>
+  <div class="col-md-12">
+    <p> Price </p>
+    <div class="demo-items" *ngFor="let price of prices" style="padding-top: 4%">
+      <nb-checkbox>{{price}}N</nb-checkbox>
+    </div>
+  </div>
+
+</div>
