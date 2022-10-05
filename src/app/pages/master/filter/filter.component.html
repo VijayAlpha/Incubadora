@@ -10,8 +10,9 @@
   <div class="col-md-12">
     <p> Price </p>
     <div class="demo-items" *ngFor="let price of prices" style="padding-top: 4%">
-      <nb-checkbox>{{price}}N</nb-checkbox>
+      <nb-radio-group [(ngModel)]="selectedPrice" (valueChange)="onChange($event)">
+        <nb-radio [value]="price">{{price}}N</nb-radio>
+      </nb-radio-group>
     </div>
   </div>
-
 </div>

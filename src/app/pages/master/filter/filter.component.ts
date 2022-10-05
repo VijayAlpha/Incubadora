@@ -10,8 +10,14 @@ export class FilterComponent implements OnInit {
   categories: any[] = [];
   constructor(private nftService: NftService) { }
   categoryIds: any[] = [];
-  @Output() editRow = new EventEmitter();
+  @Output() filter = new EventEmitter();
+  filterObj :any ={
+   "category":[],
+   "price":""
+  }
+
   prices:any[] = [10, 20, 50, 100, 200];
+  selectedPrice :any ;
 
   ngOnInit() {
     this.getCategories();
@@ -23,14 +29,21 @@ export class FilterComponent implements OnInit {
     });
   };
 
-
   toggleCategory(checked: boolean, categoryId: string) {
     if (this.categoryIds.indexOf(categoryId) > -1) {
       this.categoryIds.splice(this.categoryIds.indexOf(categoryId), 1);
     } else {
       this.categoryIds.push(categoryId);
     }
-    console.log(this.categoryIds);
+    this.filterObj.category = this.categoryIds;
+    this.filterObj.price = this.selectedPrice;
+    this.filter.emit(this.filterObj);
+  }
+
+  onChange=(event:any)=>{
+    this.filterObj.category = this.categoryIds;
+    this.filterObj.price = event;
+    this.filter.emit(this.filterObj);
   }
 
 }

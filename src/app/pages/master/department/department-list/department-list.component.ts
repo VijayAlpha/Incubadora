@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { NftService } from '../../../../service/nft.service';
 import { DepartmentService } from '../department.service';
@@ -15,15 +15,21 @@ export class DepartmentListComponent implements OnInit {
   filters: any[] = [];
   count: any = 0;
   categories: any[] = [];
+  @Input() private datatrigger: EventEmitter<any>;
 
   constructor(private nftService: NftService) { }
 
   ngOnInit(): void {
     this.loadData();
     this.getCategories();
+    if(this.datatrigger){
+       this.datatrigger.subscribe((filter) => {
+        this.filters = filter;
+        this.loadData();
+      });
+    }
+
   }
-
-
   loadData = () => {
     this.nftService.getNft(this.postPerPage, this.pageNumber, this.filters).subscribe((nfts: any) => {
       this.data = nfts.data;

@@ -5,7 +5,7 @@
         <p> Apply Filters </p>
       </nb-card-header>
       <nb-card-body>
-        <ngx-filter> </ngx-filter>
+        <ngx-filter (filter)="changeFilter($event)"> </ngx-filter>
       </nb-card-body>
     </nb-card>
   </div>
@@ -16,7 +16,7 @@
         <div class="row col-md-12"></div>
       </nb-card-header>
       <nb-card-body>
-        <ngx-department-list></ngx-department-list>
+        <ngx-department-list [datatrigger]="datatrigger"></ngx-department-list>
       </nb-card-body>
     </nb-card>
   </div>
