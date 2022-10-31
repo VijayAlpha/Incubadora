@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -26,10 +27,15 @@ public class NFTActivitySpecification extends BaseSpecification implements Speci
             if (join.equalsIgnoreCase("category")) {
                 Join<NFTActivities, Category> unitJoin = root.join("category");
                 criteria.setKey(criteria.getKey().split("\\.")[1]);
+
+/*                final Expression<Long> metadata_id = root.get("metadata_id");
+                query.groupBy(metadata_id);*/
                 return getPredicate(criteria, unitJoin, query, builder);
             }
         }
 
+/*        final Expression<Long> metadata_id = root.get("metadata_id");
+        query.groupBy(metadata_id);*/
         return getPredicate(criteria, root, query, builder);
     }
 }

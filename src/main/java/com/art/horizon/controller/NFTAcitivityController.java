@@ -33,7 +33,7 @@ public class NFTAcitivityController {
     @RequestMapping(value = "fetch", method = RequestMethod.GET)
     public void fetch(){
 
-        String request = "{\n    \"query\": \"query MyQuery {\\n  mb_views_active_listings(limit: 1000, order_by: {created_at: desc}) {\\n    metadata_id\\n    price\\n    created_at\\n    description\\n    media\\n    title\\n  }\\n}\\n\",\n    \"variables\": {}\n}";
+        String request = "{\n    \"query\": \"query MyQuery {\\n  mb_views_active_listings(limit: 3000, order_by: {created_at: desc}) {\\n    metadata_id\\n    price\\n    created_at\\n    description\\n    media\\n    title\\n  }\\n}\\n\",\n    \"variables\": {}\n}";
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response =  restTemplate.postForEntity("https://interop-mainnet.hasura.app/v1/graphql", request, String.class);

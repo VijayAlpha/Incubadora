@@ -18,13 +18,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,18 +47,105 @@ public class NFTActivityServiceImpl implements NFTActivityService {
 
     @Override
     public TableResponse getNFTs(PaginationDTO pagination) {
+        boolean isGrouping = pagination.getFilter().stream().filter(filter -> filter.getKey().equals("price")).findAny().isPresent();
+
         TableResponse response;
-        Pageable paging = PageRequest.of(pagination.getPageNo()-1, pagination.getPageSize(), Sort.by("title").ascending());
+
+        Pageable paging = PageRequest.of(pagination.getPageNo()-1, isGrouping ? pagination.getPageSize() * 1000000 : pagination.getPageSize(), Sort.by("priority").ascending());
         Page<NFTActivities> nftActivitiesPage = nftActivityRepository.findAll(getSpecifications(pagination), paging);
+        List<List<NFTActivityDTO>> groupedRecords = new ArrayList<>();
+
         if (nftActivitiesPage.hasContent()) {
             List<NFTActivityDTO> eCategoryList = nftActivitiesPage.getContent().stream().map(this::copyToDTO).collect(Collectors.toList());
+
+            if(isGrouping) {
+                Optional<SearchCriteria> priceCriteria = pagination.getFilter().stream().filter(filter -> filter.getKey().equals("price")).findAny();
+                if(priceCriteria.isPresent()){
+                    Map<Double, List<NFTActivityDTO>> groupedNFTs = eCategoryList.stream().collect(Collectors.groupingBy(NFTActivityDTO::getEPrice));
+                    Map<Integer, Map<Integer, Integer>> categories = getPriceGrouping();
+
+                    Double value = expoToNear(Double.valueOf(priceCriteria.get().getValue().toString()));
+                    if(categories.containsKey(value.intValue())){
+                        Map<Integer, Integer> priceGroup = categories.get(value.intValue());
+                        Set<Integer> recordCount = groupedNFTs.entrySet().stream().filter(set -> priceGroup.containsKey(set.getKey().intValue())).map(set -> set.getValue().size()).collect(Collectors.toSet());
+                        int minRecordCount = recordCount.stream().min(Integer::compareTo).get();
+
+                        for(Double i= 0D; i<minRecordCount; i++){
+                            List<NFTActivityDTO> groupRecord = new ArrayList<>();
+                            Double finalI = i;
+                            priceGroup.entrySet().forEach(groupedNft -> {
+                                AtomicInteger ai = new AtomicInteger(0);
+                                try {
+                                    List<NFTActivityDTO> dtoas = groupedNFTs.get(groupedNft.getKey().doubleValue());
+                                    int count = groupedNft.getValue();
+                                    if (!ObjectUtils.isEmpty(dtoas)) {
+                                        for(int j=0; j<count; j++) {
+                                            groupRecord.add(dtoas.get(finalI.intValue() + j));
+                                        }
+                                    }
+                                }catch (Exception e){
+                                }
+                            });
+                            Collections.shuffle(groupRecord);
+                            if(groupRecord.size() >= priceGroup.size()) {
+                                groupedRecords.add(groupRecord);
+                            }
+                            Collections.shuffle(groupedRecords);
+                        }
+                    }
+                }
+            }
+
             response = new TableResponse(pagination.getDraw(), (int) nftActivitiesPage.getTotalElements(), (int) nftActivitiesPage.getTotalElements(),
-                    eCategoryList);
+                    groupedRecords);
         } else {
             response = new TableResponse(pagination.getDraw(), (int) nftActivitiesPage.getTotalElements(), (int) nftActivitiesPage.getTotalElements(),
                     new ArrayList<>());
         }
         return response;
+    }
+
+    private Map<Integer, Map<Integer, Integer>> getPriceGrouping() {
+        Map<Integer, Map<Integer, Integer>> priceGroupings = new HashMap<>();
+
+        Map<Integer, Integer> tenNear = new HashMap<>();
+        tenNear.put(5, 1);
+        tenNear.put(2, 2);
+        tenNear.put(1, 1);
+
+
+        Map<Integer, Integer> twentyNear = new HashMap<>();
+        twentyNear.put(10, 1);
+        twentyNear.put(5, 1);
+        twentyNear.put(2, 2);
+        twentyNear.put(1, 1);
+
+        Map<Integer, Integer> fiftyNear = new HashMap<>();
+        fiftyNear.put(20, 1);
+        fiftyNear.put(10, 2);
+        fiftyNear.put(5, 1);
+        fiftyNear.put(2, 2);
+        fiftyNear.put(1, 1);
+
+        Map<Integer, Integer> hunderedNear = new HashMap<>();
+        hunderedNear.put(30, 1);
+        hunderedNear.put(20, 2);
+        hunderedNear.put(10, 3);
+
+        Map<Integer, Integer> twoHundredNear = new HashMap<>();
+        twoHundredNear.put(50, 1);
+        twoHundredNear.put(30, 3);
+        twoHundredNear.put(20, 2);
+        twoHundredNear.put(10, 1);
+
+
+        priceGroupings.put(10, tenNear);
+        priceGroupings.put(20, twentyNear);
+        priceGroupings.put(50, fiftyNear);
+        priceGroupings.put(100, hunderedNear);
+        priceGroupings.put(200, twoHundredNear);
+
+        return priceGroupings;
     }
 
     @Override
@@ -72,11 +167,19 @@ public class NFTActivityServiceImpl implements NFTActivityService {
     }
 
     private NFTActivityDTO copyToDTO(NFTActivities nftActivities){
+        Double diff = 1000000000000000000000000D;
         NFTActivityDTO nftActivityDTO = Mapper.map(nftActivities, NFTActivityDTO.class);
         DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         df.setMaximumFractionDigits(340);
-        nftActivityDTO.setEPrice(df.format(nftActivities.getPrice()));
+        nftActivityDTO.setEPrice(expoToNear(nftActivityDTO.getPrice()));
         return nftActivityDTO;
+    }
+
+    private Double expoToNear(Double expo){
+        Double diff = 1000000000000000000000000D;
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340);
+        return Math.floor(Double.valueOf(df.format(expo / diff)));
     }
 
     private Specification<NFTActivities> getSpecifications(PaginationDTO pagination) {

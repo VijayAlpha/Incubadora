@@ -7,7 +7,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
-import java.text.ParseException;
 
 public class BaseSpecification {
 
@@ -30,6 +29,9 @@ public class BaseSpecification {
             case "::":
                 predicate = root.get(criteria.getKey()).in(criteria.getValues());
                 break;
+            case "<>":
+                predicate = getRangePredicate(criteria, root, builder);
+                break;
             default:
 
         }
@@ -41,11 +43,23 @@ public class BaseSpecification {
         if (root.get(criteria.getKey()).getJavaType() == String.class) {
             Expression<String> path = root.get(criteria.getKey());
             Expression<String> lowerCase = builder.lower(path);
-            Predicate predicate = builder.like(lowerCase , "%" + criteria.getValue().toString().toLowerCase() + "%" );
+            Predicate predicate = builder.like(lowerCase, "%" + criteria.getValue().toString().toLowerCase() + "%");
             return predicate;
 
         } else {
             return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+        }
+    }
+
+    private Predicate getRangePredicate(SearchCriteria criteria, From root, CriteriaBuilder builder) {
+        if (root.get(criteria.getKey()).getJavaType() == String.class) {
+            Expression<String> path = root.get(criteria.getKey());
+            Expression<String> lowerCase = builder.lower(path);
+            Predicate predicate = builder.like(lowerCase, "%" + criteria.getValue().toString().toLowerCase() + "%");
+            return predicate;
+
+        } else {
+            return builder.between(root.get(criteria.getKey()), 0D, (Double) criteria.getValue());
         }
     }
 
