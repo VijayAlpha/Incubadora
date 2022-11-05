@@ -11,4 +11,10 @@
 </div>
 
 <div class="header-container">
+
+  <button *ngIf="!isConnectedX" class="btn btn-success" (click)="connect()"> {{walletLabel}} </button>
+
+
+  <button *ngIf="isConnectedX" class="btn btn-danger" (click)="disconnect()">Disconnect Wallet</button>
+
 </div>

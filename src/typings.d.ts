@@ -13,3 +13,6 @@ interface NodeModule {
 declare var tinymce: any;
 
 declare var echarts: any;
+
+declare var global: any;
+declare var require: any;

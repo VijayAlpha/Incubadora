@@ -17,6 +17,8 @@ export class FilterComponent implements OnInit {
   }
 
   prices:any[] = [10, 20, 50, 100, 200];
+  priceValue:any[] = [10000000000000000000000000, 20000000000000000000000000, 50000000000000000000000000, 100000000000000000000000000, 200000000000000000000000000];
+
   selectedPrice :any ;
 
   ngOnInit() {
@@ -41,6 +43,7 @@ export class FilterComponent implements OnInit {
   }
 
   onChange=(event:any)=>{
+    console.log(event);
     this.filterObj.category = this.categoryIds;
     this.filterObj.price = this.selectedPrice;
     this.filter.emit(this.filterObj);

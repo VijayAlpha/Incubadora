@@ -8,9 +8,9 @@
   <div style="margin-bottom: 2%; margin-top: 2%;" class="col-md-12"> </div>
   <div class="col-md-12">
     <p> Price </p>
-    <div class="demo-items" *ngFor="let price of prices" style="padding-top: 4%">
+    <div class="demo-items" *ngFor="let price of prices; let i = index" style="padding-top: 4%">
       <nb-radio-group [(value)]="selectedPrice" (valueChange)="onChange($event)">
-        <nb-radio [value]="price">{{price}}N</nb-radio>
+        <nb-radio [value]="priceValue[i]">{{price}}N</nb-radio>
       </nb-radio-group>
     </div>
   </div>
