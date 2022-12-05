@@ -14,4 +14,5 @@ public class TableResponse {
     private Object recordsTotal;
     private Object recordsFiltered;
     private List<?> data;
+    private String type;
 }

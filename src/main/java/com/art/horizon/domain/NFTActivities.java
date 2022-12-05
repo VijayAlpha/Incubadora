@@ -4,8 +4,10 @@ import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -13,11 +15,12 @@ import javax.persistence.Table;
 @Data
 @Table
 @Entity
-public class NFTActivities extends IdentifiableBase{
+public class NFTActivities {
+    @Id
+    private String metadata_id;
 
     private String title;
     private String media;
-    private String metadata_id;
     private Double price;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -26,4 +29,7 @@ public class NFTActivities extends IdentifiableBase{
     private Category category;
 
     private Integer priority;
+
+    private String nft_contract_id;
+    private String token_id;
 }

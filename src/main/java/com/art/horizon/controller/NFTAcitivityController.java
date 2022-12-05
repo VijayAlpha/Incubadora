@@ -33,7 +33,21 @@ public class NFTAcitivityController {
     @RequestMapping(value = "fetch", method = RequestMethod.GET)
     public void fetch(){
 
-        String request = "{\n    \"query\": \"query MyQuery {\\n  mb_views_active_listings(limit: 3000, order_by: {created_at: desc}) {\\n    metadata_id\\n    price\\n    created_at\\n    description\\n    media\\n    title\\n  }\\n}\\n\",\n    \"variables\": {}\n}";
+        String request = "{\n    \"query\": \"query MyQuery {\\n  mb_views_active_listings( where: {nft_contract_id: {_eq: \\\"incubadora.mintbase1.near\\\"}}, order_by: {created_at: desc}) {\\n    metadata_id\\n    price\\n    created_at\\n    description\\n    media\\n    title\\n  token_id \\n nft_contract_id\\n }\\n}\\n\",\n    \"variables\": {}\n}";
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response =  restTemplate.postForEntity("https://interop-mainnet.hasura.app/v1/graphql", request, String.class);
+        if(response.hasBody()){
+            String data = response.getBody();
+            Obj data1 = new Gson().fromJson(data, Obj.class);
+            nftActivityService.saveAll(data1.getData().getMb_views_active_listings());
+        }
+    }
+
+    @RequestMapping(value = "/fetch/base", method = RequestMethod.GET)
+    public void fetch(@RequestParam("base") String base){
+
+        String request = "{\n    \"query\": \"query MyQuery {\\n  mb_views_active_listings( where: {nft_contract_id: {_eq: \\\""+base+"\\\"}}, order_by: {created_at: desc}) {\\n    metadata_id\\n    price\\n    created_at\\n    description\\n    media\\n    title\\n  token_id \\n nft_contract_id\\n }\\n}\\n\",\n    \"variables\": {}\n}";
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response =  restTemplate.postForEntity("https://interop-mainnet.hasura.app/v1/graphql", request, String.class);

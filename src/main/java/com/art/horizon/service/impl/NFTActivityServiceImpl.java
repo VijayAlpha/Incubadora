@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -23,10 +22,8 @@ import org.springframework.util.ObjectUtils;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -51,7 +48,7 @@ public class NFTActivityServiceImpl implements NFTActivityService {
 
         TableResponse response;
 
-        Pageable paging = PageRequest.of(pagination.getPageNo()-1, isGrouping ? pagination.getPageSize() * 1000000 : pagination.getPageSize(), Sort.by("priority").ascending());
+        Pageable paging = PageRequest.of(pagination.getPageNo()-1, isGrouping ? pagination.getPageSize() * 1000000 : pagination.getPageSize());
         Page<NFTActivities> nftActivitiesPage = nftActivityRepository.findAll(getSpecifications(pagination), paging);
         List<List<NFTActivityDTO>> groupedRecords = new ArrayList<>();
 
@@ -86,7 +83,6 @@ public class NFTActivityServiceImpl implements NFTActivityService {
                                 }catch (Exception e){
                                 }
                             });
-                            Collections.shuffle(groupRecord);
                             if(groupRecord.size() >= priceGroup.size()) {
                                 groupedRecords.add(groupRecord);
                             }
@@ -94,13 +90,16 @@ public class NFTActivityServiceImpl implements NFTActivityService {
                         }
                     }
                 }
+                response = new TableResponse(pagination.getDraw(), (int) nftActivitiesPage.getTotalElements(), (int) nftActivitiesPage.getTotalElements(),
+                        groupedRecords, "group");
             }
-
-            response = new TableResponse(pagination.getDraw(), (int) nftActivitiesPage.getTotalElements(), (int) nftActivitiesPage.getTotalElements(),
-                    groupedRecords);
+            else {
+                response = new TableResponse(pagination.getDraw(), (int) nftActivitiesPage.getTotalElements(), (int) nftActivitiesPage.getTotalElements(),
+                        eCategoryList, "normal");
+            }
         } else {
             response = new TableResponse(pagination.getDraw(), (int) nftActivitiesPage.getTotalElements(), (int) nftActivitiesPage.getTotalElements(),
-                    new ArrayList<>());
+                    new ArrayList<>(), "normal");
         }
         return response;
     }

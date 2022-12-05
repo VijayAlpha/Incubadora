@@ -12,4 +12,8 @@ public class NFTActivityDTO {
     private Double ePrice;
     private CategoryDTO category;
     private Integer priority;
+
+    private String nft_contract_id;
+
+    private String token_id;
 }

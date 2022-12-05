@@ -91,10 +91,10 @@ public class CategoryServiceImpl implements CategoryService {
             List<Category> eCategoryList = categoryPage.getContent();
             categoryList =eCategoryList.stream().map(this::copyToDTO).collect(Collectors.toList());
             response = new TableResponse(pagination.getDraw(), (int) categoryPage.getTotalElements(), (int) categoryPage.getTotalElements(),
-                    categoryList);
+                    categoryList, "");
         } else {
             response = new TableResponse(pagination.getDraw(), (int) categoryPage.getTotalElements(), (int) categoryPage.getTotalElements(),
-                    new ArrayList<>());
+                    new ArrayList<>(), "");
         }
         return response;
 
