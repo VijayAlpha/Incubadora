@@ -160,7 +160,11 @@ public class NFTActivityServiceImpl implements NFTActivityService {
         if(nftActivitiesOptional.isPresent()){
             Category category = categoryService.findById(categoryId);
             NFTActivities nftActivities = nftActivitiesOptional.get();
-            nftActivities.setCategory(category);
+            if(nftActivities.getCategory() != null && categoryId.equals(nftActivities.getCategory().getId())){
+                nftActivities.setCategory(null);
+            }else {
+                nftActivities.setCategory(category);
+            }
             nftActivityRepository.save(nftActivities);
         }
     }
