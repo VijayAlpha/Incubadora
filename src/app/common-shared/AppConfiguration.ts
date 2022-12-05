@@ -13,4 +13,8 @@ export class AppConfiguration {
 
   updateActivity = "art/nft/activity/updateActivity?id=";
 
+
+
+  fetchBase = "art/nft/activity/fetch/base?base=";
+
 }

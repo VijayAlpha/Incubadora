@@ -23,14 +23,15 @@
           <img src="{{nft.media}}" height="100" width="150">
         </div>
       </div>
-      <div class="row">
+      <div class="row" style="">
         <div class="col" *ngFor="let category of categories">
           <div *ngIf="nft.category?.id != category.id; else other_content">
-            <a href="javascript:void(0)" (click)="updateCategory(nft.id, category.id)"
+            <a href="javascript:void(0)" (click)="updateCategory(nft.metadata_id, category.id)"
               style="text-decoration: none;">{{category.name}}</a>
           </div>
 
-          <ng-template #other_content><a href="javascript:void(0)" (click)="updateCategory(nft.id, category.id)"
+          <ng-template #other_content><a href="javascript:void(0)"
+              (click)="updateCategory(nft.metadata_id, category.id)"
               style="text-decoration: none; color: green;">{{category.name}}</a></ng-template>
         </div>
       </div>
@@ -48,7 +49,7 @@
   <nb-card>
     <nb-card-header>
       <div style="float:right">
-        <button class="btn btn-success" (click)="mint(data2)"> Mint </button>
+        <button class="btn btn-success" (click)="mint(data2)"> Buy </button>
       </div>
     </nb-card-header>
 

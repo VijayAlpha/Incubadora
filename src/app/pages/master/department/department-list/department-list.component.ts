@@ -18,6 +18,7 @@ export class DepartmentListComponent implements OnInit {
   data2: any;
   filters: any[] = [];
   count: any = 0;
+  count2:any = 0;
   categories: any[] = [];
   @Input() private datatrigger: EventEmitter<any>;
   type: any;
@@ -28,7 +29,7 @@ export class DepartmentListComponent implements OnInit {
   walletDataX: any;
 
 
-  constructor(private nftService: NftService,  private commonToastrService: CommonToastrService) {
+  constructor(private nftService: NftService, private commonToastrService: CommonToastrService) {
     this.connect2();
   }
 
@@ -63,8 +64,8 @@ export class DepartmentListComponent implements OnInit {
         this.loadData();
       });
     }
-
   }
+
   loadData = () => {
     this.nftService.getNft(this.postPerPage, this.pageNumber, this.filters).subscribe((nfts: any) => {
       console.log(nfts);
@@ -72,8 +73,8 @@ export class DepartmentListComponent implements OnInit {
       this.data2 = this.data[0];
       this.count = this.data.length;
       this.type = nfts?.type;
-    })
-
+      this.count = nfts?.recordsTotal;
+    });
   };
 
   getCategories = () => {
@@ -84,9 +85,11 @@ export class DepartmentListComponent implements OnInit {
 
 
   updateCategory = (activityId, categoryId: string) => {
+
     this.nftService.updateCategory(activityId, categoryId.trim()).subscribe((nft: any) => {
       this.loadData();
     });
+
   };
 
 
@@ -124,16 +127,12 @@ export class DepartmentListComponent implements OnInit {
     if (this.isConnectedX) {
       const marketAddress = "market.mintspace2.near";
 
-      console.log(tokenIds);
-      console.log(prices);
-      console.log(marketAddress);
-
       await this.walletX.batchMakeOffer(tokenIds, prices, {
         marketAddress,
       });
 
     } else {
-       this.commonToastrService.showFailure("Please Connect Wallet to Mint");
+      this.commonToastrService.showFailure("Please Connect Wallet to Mint");
     }
 
   };

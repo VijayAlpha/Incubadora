@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { eventNames } from 'process';
 import { isEmpty } from 'rxjs/operators';
+import { NftService } from '../../../service/nft.service';
 
 @Component({
   selector: 'ngx-department',
@@ -11,6 +12,8 @@ export class DepartmentComponent implements OnInit {
   public datatrigger: EventEmitter<any> = new EventEmitter();
   filter:any = [];
   priceFilter:any;
+  store :any = "";
+
   categoryObj:any = {
     "key":"category.id",
     "operation": "::",
@@ -22,7 +25,10 @@ export class DepartmentComponent implements OnInit {
     "operation": "<>",
     "value":""
   }
-  constructor() { }
+
+
+  constructor(private nftService: NftService) { }
+
 
   ngOnInit() {
 
@@ -40,6 +46,13 @@ export class DepartmentComponent implements OnInit {
     }
     this.datatrigger.emit(this.filter);
   }
+
+
+  fetch = (storeData) =>{
+      this.nftService.fetchStore(storeData).subscribe((data:any)=>{
+          this.changeFilter(null);
+      });
+  };
 
 }
 

@@ -34,4 +34,9 @@ export class NftService {
     return Math.floor((Math.random() * 100) + 1);
   }
 
+
+  fetchStore = (store) => {
+          return this.commonHttpClientService.httpGet(this.appConfiguration.fetchBase + store);
+  };
+
 }

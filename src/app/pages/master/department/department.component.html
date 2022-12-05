@@ -5,6 +5,16 @@
         <p> Apply Filters </p>
       </nb-card-header>
       <nb-card-body>
+        <div class="row" style="display: block;">
+          <div class="col-md-9">
+            <label> Store Id </label>
+            <input type="text" class="form-control" placeholder="store.mintbase1.near" [value]="store" #heroName>
+          </div>
+          <div class="col-md-2" style="margin-top: 2%;">
+            <label> </label>
+            <button class="btn btn-success" (click)="fetch(heroName.value)">Fetch</button>
+          </div>
+        </div>
         <ngx-filter (filter)="changeFilter($event)"> </ngx-filter>
       </nb-card-body>
     </nb-card>
