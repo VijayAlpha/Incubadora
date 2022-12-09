@@ -1,4 +1,8 @@
 # App Setup
 
-- npm i
-- npm run start
+
+```bash
+npm install
+
+npm run start
+```
